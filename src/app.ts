@@ -3,16 +3,17 @@ import { getLocalConfig } from './utils/config.js'
 import type { AppOptions } from './types.js'
 import inquirer from 'inquirer'
 
-async function getAppInstallationId(providedId?: string): Promise<string> {
+async function getAppInstallationId(action: string, providedId?: string): Promise<string> {
   if (providedId) {
     return providedId
   }
 
+  // If not provided via CLI args, prompt for it
   const { appInstallationId } = await inquirer.prompt([
     {
       type: 'input',
       name: 'appInstallationId',
-      message: 'Please enter the app installation ID (for enable/disable/uninstall):',
+      message: `Please enter the app installation ID (for ${action}):`,
       validate: (input: string) => {
         if (!input) return 'App installation ID is required'
         return true
@@ -28,6 +29,7 @@ async function getManifestUrl(providedUrl?: string): Promise<string> {
     return providedUrl
   }
 
+  // If not provided via CLI args, prompt for it
   const { manifestUrl } = await inquirer.prompt([
     {
       type: 'input',
@@ -60,6 +62,15 @@ export async function appCommand(
       throw new Error('Invalid configuration. Please run "npx op2 login" again')
     }
 
+    // Validate required arguments are provided for non-interactive mode
+    if (action === 'install' && options.manifestUrl && !options.manifestUrl.trim()) {
+      throw new Error('Manifest URL cannot be empty')
+    }
+    
+    if (['enable', 'disable', 'uninstall'].includes(action) && options.appInstallationId && !options.appInstallationId.trim()) {
+      throw new Error('App installation ID cannot be empty')
+    }
+
     let appInstallationId: string = ''
     let manifestUrl: string | undefined
     
@@ -69,7 +80,7 @@ export async function appCommand(
       appInstallationId = ''
     } else {
       // enable, disable, uninstall 需要 installation ID
-      appInstallationId = await getAppInstallationId(options.appInstallationId)
+      appInstallationId = await getAppInstallationId(action, options.appInstallationId)
     }
 
     console.log(`🚀 ${action.charAt(0).toUpperCase() + action.slice(1)}ing app...`)

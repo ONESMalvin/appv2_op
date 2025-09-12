@@ -6,6 +6,32 @@ export async function displayLoginPrompts(
   baseURL?: string,
   options: LoginOptions = {}
 ): Promise<LoginPromptAnswer> {
+  // If all required parameters are provided via CLI, skip interactive prompts
+  if (baseURL && options.username && options.password) {
+    // Validate provided parameters
+    if (!isURL(baseURL)) {
+      throw new Error('Invalid base URL provided')
+    }
+    if (!isEmail(options.username) && !isPhone(options.username)) {
+      throw new Error('Username must be a valid email or phone number')
+    }
+    if (!isPassword(options.password)) {
+      throw new Error('Password must be 8-32 characters and not contain spaces')
+    }
+    
+    // Clean baseURL (remove trailing slash)
+    let cleanURL = baseURL.trim()
+    if (cleanURL.endsWith('/')) {
+      cleanURL = cleanURL.slice(0, -1)
+    }
+    
+    return {
+      baseURL: cleanURL,
+      username: options.username,
+      password: options.password
+    }
+  }
+
   const questions = [
     {
       type: 'input',

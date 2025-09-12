@@ -17,6 +17,7 @@ program
   .argument('[baseURL]', 'Environment base URL (e.g., https://ones.ai)')
   .option('-u, --username <username>', 'Username (email or phone number)')
   .option('-p, --password <password>', 'Password')
+  .addHelpText('after', '\nExamples:\n  $ npx op2 login https://ones.ai -u user@example.com -p mypassword\n  $ npx op2 login  # Interactive mode')
   .action((baseURL, options) => login(baseURL, options))
 
 program
@@ -25,6 +26,7 @@ program
   .argument('<action>', 'Action to perform (install|enable|disable|uninstall)')
   .option('-a, --app-installation-id <id>', 'App installation ID (required for enable/disable/uninstall)')
   .option('-m, --manifest-url <url>', 'Manifest URL (required for install)')
+  .addHelpText('after', '\nExamples:\n  $ npx op2 app install -m https://example.com/manifest.yaml\n  $ npx op2 app enable -a installation_12345\n  $ npx op2 app install  # Interactive mode')
   .action((action, options) => {
     if (!['install', 'enable', 'disable', 'uninstall'].includes(action)) {
       console.error(`❌ Invalid action: ${action}`)
