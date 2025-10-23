@@ -1,0 +1,229 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "definitions": {
+    "extensionKey": {
+      "description": "Unique identifier for the extension in the app.",
+      "maxLength": 64,
+      "minLength": 1,
+      "type": "string"
+    },
+    "extensionUrlPath": {
+      "description": "Must start with /",
+      "maxLength": 256,
+      "minLength": 1,
+      "pattern": "^/[^\\s?#]*([?][^\\s#]*)?([#][^\\s]*)?$",
+      "type": "string"
+    },
+    "httpUrl": {
+      "description": "Must start with http(s):// and not contain ? or #",
+      "format": "uri",
+      "maxLength": 256,
+      "pattern": "^https?://[^\\s?#]+$",
+      "type": "string"
+    },
+    "semanticVersion": {
+      "description": "Semantic version (e.g., v1.0.0)",
+      "maxLength": 32,
+      "pattern": "^v\\d+\\.\\d+\\.\\d+$",
+      "type": "string"
+    },
+    "urlPath": {
+      "description": "Must start with / and not contain #",
+      "maxLength": 256,
+      "pattern": "^/[^#\\s]*$",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "auth": {
+      "properties": {
+        "type": {
+          "description": "Authentication type (currently only 'jwt' is supported)",
+          "enum": ["jwt"],
+          "type": "string"
+        }
+      },
+      "required": ["type"],
+      "type": "object"
+    },
+    "base_url": {
+      "$ref": "#/definitions/httpUrl"
+    },
+    "desc": {
+      "maxLength": 1024,
+      "type": ["string", "null"]
+    },
+    "events": {
+      "$schema": "http://json-schema.org/draft/2020-12/schema#",
+      "additionalProperties": false,
+      "properties": {
+        "types": {
+          "items": {
+            "properties": {
+              "eventType": {
+                "description": "The event defined by ONES which the app will listen to.",
+                "minLength": 1,
+                "type": "string"
+              }
+            },
+            "required": ["eventType"],
+            "type": "object"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "url": {
+          "description": "Must start with / and not contain #",
+          "maxLength": 256,
+          "pattern": "^/[^#\\s]*$",
+          "type": "string"
+        }
+      },
+      "required": ["url", "types"],
+      "title": "App Manifest Events Configuration Schema",
+      "type": ["object", "null"]
+    },
+    "extensions": {
+      "$schema": "http://json-schema.org/draft/2020-12/schema#",
+      "additionalProperties": false,
+      "properties": {
+        "appSettingPages": {
+          "items": {
+            "properties": {
+              "funcs": {
+                "properties": {
+                  "customEntries": {
+                    "$ref": "#/definitions/extensionUrlPath"
+                  }
+                },
+                "required": ["customEntries"],
+                "type": "object"
+              },
+              "key": {
+                "$ref": "#/definitions/extensionKey"
+              }
+            },
+            "required": ["key", "funcs"],
+            "type": "object"
+          },
+          "maxItems": 1,
+          "minItems": 1,
+          "type": "array"
+        },
+        "manhourValidator": {
+          "items": {
+            "properties": {
+              "funcs": {
+                "properties": {
+                  "validate": {
+                    "$ref": "#/definitions/extensionUrlPath"
+                  }
+                },
+                "required": ["validate"],
+                "type": "object"
+              },
+              "key": {
+                "$ref": "#/definitions/extensionKey"
+              }
+            },
+            "required": ["key", "funcs"],
+            "type": "object"
+          },
+          "minItems": 1,
+          "type": "array",
+          "uniqueItems": true
+        }
+      },
+      "title": "App Manifest Extensions Configuration Schema",
+      "type": ["object", "null"]
+    },
+    "id": {
+      "description": "Format: app_ + 16 lowercase alphanumeric chars",
+      "maxLength": 20,
+      "minLength": 20,
+      "pattern": "^app_[0-9a-z]{16}$",
+      "type": "string"
+    },
+    "lifecycle_callback": {
+      "properties": {
+        "disabled": {
+          "$ref": "#/definitions/urlPath"
+        },
+        "enabled": {
+          "$ref": "#/definitions/urlPath"
+        },
+        "install": {
+          "$ref": "#/definitions/urlPath"
+        },
+        "uninstalled": {
+          "$ref": "#/definitions/urlPath"
+        }
+      },
+      "required": ["install"],
+      "type": "object"
+    },
+    "logo": {
+      "$ref": "#/definitions/httpUrl",
+      "maxLength": 256,
+      "type": ["string", "null"]
+    },
+    "name": {
+      "maxLength": 64,
+      "minLength": 1,
+      "type": "string"
+    },
+    "oauth": {
+      "$schema": "http://json-schema.org/draft/2020-12/schema#",
+      "additionalProperties": false,
+      "properties": {
+        "redirect_url": {
+          "description": "Must start with / and not contain #",
+          "maxLength": 256,
+          "pattern": "^/[^#\\s]*$",
+          "type": ["string", "null"]
+        },
+        "scope": {
+          "items": {
+            "pattern": "^[a-z]+:[0-9a-zA-Z\\-]+:[0-9a-zA-Z\\-]+$",
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "type": {
+          "items": {
+            "enum": ["app", "user"],
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": ["array", "null"],
+          "uniqueItems": true
+        }
+      },
+      "required": ["scope"],
+      "title": "App Manifest OAuth Configuration Schema",
+      "type": ["object", "null"]
+    },
+    "ones_version": {
+      "properties": {
+        "max": {
+          "$ref": "#/definitions/semanticVersion",
+          "description": "Maximum compatible ONES version (e.g., v6.39.9)"
+        },
+        "min": {
+          "$ref": "#/definitions/semanticVersion",
+          "description": "Minimum compatible ONES version (e.g., v6.30.0)"
+        }
+      },
+      "type": ["object", "null"]
+    },
+    "version": {
+      "$ref": "#/definitions/semanticVersion"
+    }
+  },
+  "required": ["id", "name", "version", "base_url", "auth", "lifecycle_callback"],
+  "title": "ONES Application Manifest Schema",
+  "type": "object"
+}

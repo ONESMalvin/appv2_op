@@ -15,7 +15,13 @@
     "prepublishOnly": "npm run build",
     "postinstall": "echo '\n✅ op2 CLI installed successfully!\n\nUsage:\n  npx @onesmalvin/op2 login https://your-ones-platform.com\n  npx @onesmalvin/op2 app install -m manifest-url\n\nFor help: npx @onesmalvin/op2 --help\n'"
   },
-  "keywords": ["login", "cli", "ones", "authentication", "app-management"],
+  "keywords": [
+    "login",
+    "cli",
+    "ones",
+    "authentication",
+    "app-management"
+  ],
   "author": "Malvin",
   "license": "MIT",
   "repository": {
@@ -35,20 +41,23 @@
     "CLAUDE.md"
   ],
   "dependencies": {
-    "commander": "^9.4.0",
-    "inquirer": "^9.0.2",
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
     "axios": "^1.7.7",
-    "js-yaml": "^4.1.0",
+    "commander": "^9.4.0",
     "fs-extra": "^11.3.0",
+    "inquirer": "^9.0.2",
+    "js-yaml": "^4.1.0",
     "lodash-es": "^4.17.21"
   },
   "devDependencies": {
+    "@types/ajv": "^0.0.5",
+    "@types/fs-extra": "^11.0.4",
     "@types/inquirer": "^8.2.1",
     "@types/js-yaml": "^4.0.5",
-    "@types/fs-extra": "^11.0.4",
     "@types/lodash-es": "^4.17.12",
     "@types/node": "^18.0.0",
-    "typescript": "^5.0.0",
-    "tsx": "^4.0.0"
+    "tsx": "^4.0.0",
+    "typescript": "^5.0.0"
   }
 }

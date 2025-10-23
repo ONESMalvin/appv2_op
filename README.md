@@ -11,6 +11,7 @@
 - ✅ TypeScript编写，类型安全
 - ✅ 支持npx直接使用
 - ✅ 支持应用管理（install/enable/disable/uninstall）
+- ✅ 支持 manifest.json 文件校验
 
 ## 安装和使用
 
@@ -54,6 +55,18 @@ npx @onesmalvin/op2 app uninstall -a <app-installation-id>
 
 # 交互式模式（不提供参数时会提示输入）
 npx @onesmalvin/op2 app install
+```
+
+#### Manifest 校验
+```bash
+# 校验 manifest.json 文件
+npx @onesmalvin/op2 validate -m ./manifest.json
+
+# 指定自定义 schema 文件
+npx @onesmalvin/op2 validate -m ./manifest.json -s ./custom-schema.json
+
+# 交互式模式（不提供参数时会提示输入）
+npx @onesmalvin/op2 validate
 ```
 
 ## 开发
@@ -112,6 +125,30 @@ npx @onesmalvin/op2 app install -m https://your-manifest-url
 npx @onesmalvin/op2 app enable -a install_your-installation-id
 ```
 
+## Manifest 校验功能
+
+### 功能说明
+- 验证 manifest.json 文件是否符合 ONES 应用清单规范
+- 使用 JSON Schema 进行严格验证
+- 支持自定义 schema 文件
+- 提供详细的错误信息和修复建议
+
+### 支持的参数
+- `-m, --manifest <path>` - manifest.json 文件路径
+- `-s, --schema <path>` - 自定义 schema 文件路径（可选，默认使用 `docs/app_manifest_schema.json`）
+
+### 使用场景
+- 开发 ONES 应用时验证清单文件格式
+- CI/CD 流程中自动校验
+- 应用发布前的格式检查
+
+### 校验规则
+基于 `docs/app_manifest_schema.json` 中定义的规范：
+- 必需字段验证（id, name, version, base_url, auth, lifecycle_callback）
+- 字段格式验证（URL格式、版本号格式、ID格式等）
+- 数据类型验证
+- 枚举值验证
+
 ## 技术栈
 
 - TypeScript
@@ -119,3 +156,4 @@ npx @onesmalvin/op2 app enable -a install_your-installation-id
 - Inquirer.js (交互式命令行)
 - Axios (HTTP客户端)
 - js-yaml (YAML处理)
+- AJV (JSON Schema验证)

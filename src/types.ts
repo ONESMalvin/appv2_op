@@ -84,3 +84,14 @@ export interface ErrorResponse {
     [key: string]: any
   }
 }
+
+export interface ValidationOptions {
+  manifest?: string
+  schema?: string
+}
+
+export interface ValidationResult {
+  isValid: boolean
+  errors: string[]
+  warnings?: string[]
+}

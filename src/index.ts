@@ -3,6 +3,7 @@
 import { Command } from 'commander'
 import { login } from './login.js'
 import { appCommand } from './app.js'
+import { validateCommand } from './validate.js'
 
 const program = new Command()
 
@@ -38,6 +39,14 @@ program
       manifestUrl: options.manifestUrl
     })
   })
+
+program
+  .command('validate')
+  .description('Validate manifest.json file against ONES app schema')
+  .option('-m, --manifest <path>', 'Path to manifest.json file')
+  .option('-s, --schema <path>', 'Path to schema file (default: docs/app_manifest_schema.json)')
+  .addHelpText('after', '\nExamples:\n  $ npx op2 validate -m ./manifest.json\n  $ npx op2 validate -m ./my-app/manifest.json -s ./custom-schema.json\n  $ npx op2 validate  # Interactive mode')
+  .action((options) => validateCommand(options))
 
 // 如果没有提供任何命令，显示帮助信息
 if (process.argv.length <= 2) {
